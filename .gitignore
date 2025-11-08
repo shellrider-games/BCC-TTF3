@@ -3,3 +3,4 @@ ttg/
 .idea
 scrapeWeatherData
 Backend/__pycache__
+venv
