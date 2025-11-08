@@ -89,9 +89,9 @@ export default function DensityMap() {
     }
 
     return (
-        <div 
-            ref={mapContainerRef} 
-            style={{ height: '90vh', width: '90vw' }}
+        <div
+            ref={mapContainerRef}
+            style={{height: '100vh', width: '100vh'}}
         />
     );
 }
