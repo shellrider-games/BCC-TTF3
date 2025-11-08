@@ -6,3 +6,7 @@ Backend/__pycache__
 venv
 batch/TTF_POI.csv
 batch/data
+/.ipynb_checkpoints
+/clean_data
+/raw_data
+/cross_val_plots
