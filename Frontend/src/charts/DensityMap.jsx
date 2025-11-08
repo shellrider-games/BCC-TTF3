@@ -4,6 +4,7 @@ import { getData } from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.heat';
+import {Skeleton} from "@/components/ui/skeleton.jsx";
 
 export default function DensityMap() {
     const mapContainerRef = useRef(null);
@@ -105,8 +106,8 @@ export default function DensityMap() {
 
     if (!data) {
         return (
-            <div style={{height: '100%', width: '100%', minHeight: '400px'}}>
-                Loading map data...
+            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className={"rounded-xl"}>
+                <Skeleton className="h-full w-full"/>
             </div>
         );
     }
@@ -119,6 +120,7 @@ export default function DensityMap() {
                 width: '100%',
                 minHeight: '400px'
             }}
+            className={"rounded-xl"}
         />
     );
 }

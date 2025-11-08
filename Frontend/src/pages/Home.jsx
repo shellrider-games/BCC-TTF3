@@ -24,9 +24,10 @@ function Home() {
                 <TypographyH1 className={"text-[#E52423]"}>Data. What? Fuck you.</TypographyH1>
                 <Card className="w-full pb-0">
                     <CardHeader>
-                        <CardTitle>Cool Chart Titsle</CardTitle>
+                        <CardTitle>Density of Visitors</CardTitle>
                         <CardDescription>
-                            Description of the Chart
+                            Heatmap visualization tracking the concentration of individuals across the defined space,
+                            revealing real-time or aggregate traffic patterns.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
