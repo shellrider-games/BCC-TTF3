@@ -4,7 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export default function BarChart() {
     const svgRef = useRef(null);
+    const containerRef = useRef(null);
     const [data, setData] = useState(null);
+    const [dimensions, setDimensions] = useState({width: 928, height: 500});
 
     useEffect(() => {
         async function loadData() {
@@ -19,6 +21,39 @@ export default function BarChart() {
         loadData();
     }, []);
 
+    // Handle container resize to ensure chart fills container
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const handleResize = () => {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                console.log('Container rect:', rect);
+                console.log('Resizing chart container to:', {
+                    width: rect.width,
+                    height: rect.height
+                });
+
+                // Ensure minimum dimensions
+                const width = Math.max(rect.width, 300);
+                const height = Math.max(rect.height, 200);
+
+                setDimensions({width, height});
+            }
+        };
+
+        // Initial resize after a short delay to ensure container is rendered
+        const resizeTimer = setTimeout(handleResize, 100);
+
+        // Add window resize listener
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     useEffect(() => {
         if (!data || !svgRef.current) return;
 
@@ -26,15 +61,16 @@ export default function BarChart() {
         d3.select(svgRef.current).selectAll("*").remove();
 
         drawBarChart(data);
-    }, [data]);
+    }, [data, dimensions]);
 
     function drawBarChart(data) {
-        const width = 928;
-        const height = 500;
+        const {width, height} = dimensions;
         const marginTop = 30;
         const marginRight = 20;
         const marginBottom = 40;
         const marginLeft = 40;
+
+        console.log('Drawing chart with dimensions:', {width, height});
 
         // Group data by hour and count occurrences
         const hourCounts = d3.rollups(
@@ -61,10 +97,11 @@ export default function BarChart() {
 
         // Create SVG
         const svg = d3.select(svgRef.current)
-            .attr("width", width)
-            .attr("height", height)
+            .attr("width", "100%")
+            .attr("height", "100%")
             .attr("viewBox", [0, 0, width, height])
-            .attr("style", "max-width: 100%; height: auto;");
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("style", "display: block; margin: auto;");
 
         // Add bars
         svg.append("g")
@@ -99,12 +136,36 @@ export default function BarChart() {
     }
 
     if (!data) {
-        return <div>Loading chart...</div>;
+        return (
+            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className={"rounded-xl"}>
+                <div className="h-full w-full flex items-center justify-center">
+                    Loading chart...
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <svg ref={svgRef}></svg>
+        <div
+            ref={containerRef}
+            style={{
+                height: '100%',
+                width: '100%',
+                minHeight: '100px',
+                position: 'relative'
+            }}
+            className={"rounded-xl"}
+        >
+            <svg
+                ref={svgRef}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%'
+                }}
+            ></svg>
         </div>
     );
 }

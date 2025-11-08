@@ -43,7 +43,7 @@ function Home() {
                             revealing real-time or aggregate traffic patterns.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[60vh] h-fit overflow-clip">
+                    <CardContent className="h-fit overflow-clip">
                         <BarChart/>
                     </CardContent>
                 </Card>
