@@ -27,6 +27,7 @@
   - [How to Run](#how-to-run)
     - [1. Train the Model](#1-train-the-model)
     - [2. Run the Flask Backend](#2-run-the-flask-backend)
+  - [Weather data](#weather-data)
 
 ---
 
@@ -43,7 +44,7 @@
 * **Modeling:** <INSERT ML LIBRARIES, e.g., Pandas, Scikit-learn, TensorFlow, PyTorch>
 * **Backend:** Flask - A lightweight WSGI web application framework for Python
 * **Dashboard:** <INSERT DASHBOARD TOOL, e.g., Streamlit, Plotly Dash, Tableau>
-* **Data Processing:** <INSERT LIBRARIES, e.g., Pandas, NumPy>
+* **Data Processing:** Pandas
 * **Language:** <INSERT LANGUAGE, e.g., Python 3.10>
 
 ---
@@ -132,9 +133,21 @@ To run the Flask backend:
 
 3. Run the Flask application:
    ```bash
-   flas run
+   flask run
    ```
 
 4. By default, the Flask server will start on `http://localhost:5000`. You can access the API endpoints through your browser or API client.
 
 **Note:** For development purposes, Flask's built-in server is sufficient. For production deployment, consider using a production-ready WSGI server like Gunicorn or uWSGI.
+
+## Weather data
+
+This project uses the Open-Meteo v1 API to get weather data which used in the prediction model. For mor information on the API please refer to their documentation at https://open-meteo.com/en/docs.
+
+ The script `batch/todaysWeather.py` takes the path to a CSV file as the first positional argument. The CSV file needs to have at least the 3 columns named `TrackerID`, `Latitude` and `Longitude`. The CSV file is using `;`as a seperator  and `,` as a comma file. The script will use the weather API for each row's coordinate and get save todays hourly weather as a CSV file.
+
+ Minimal CSV example:
+```csv
+TrackerID;Latitude;Longitude
+XISKO;47.83468443576882;13.1133425789364
+```

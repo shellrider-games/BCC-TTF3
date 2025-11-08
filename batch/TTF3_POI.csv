@@ -1,0 +1,34 @@
+﻿Ort;Name;TrackerID;Tourdata ID;ObjectGUID;Latitude;Longitude
+Seewalchen am Attersee;Freibadeanlage Litzlberg - Parkplatz;parkplatzinfo.at-486300;430011116;NULL;47,9391724079582;13,5637744389164
+Attersee;Parkplatz beim Erlebnisbad Attersee;parkplatzinfo.at-486400;430023032;NULL;47,9146834700391;13,5401612317138
+Unterach am Attersee;Parkplatz Unterach am Attersee;parkplatzinfo.at-486600;430030109;NULL;47,8033864401575;13,4864217213085
+St. Lorenz am Mondsee;Badeplatz Schwarzindien und Plomberg;parkplatzinfo.at-531000;201724;NULL;47,8443605032114;13,3411542525728
+Tiefgraben;Badeplatz Tiefgraben;parkplatzinfo.at-489300;201613;NULL;47,8916718940097;13,3167336394603
+Zell am Moos am Irrsee;Landesbadeplatz Zell am Moos;parkplatzinfo.at-489301;430003251;NULL;47,9046115923917;13,3129258273699
+Traunkirchen;Badeplatz 'Bräuwiese';parkplatzinfo.at-480100;430002940;NULL;47,8580436557562;13,7840095118806
+Steinbach am Attersee;Parkplatz Weißenbach;parkplatzinfo.at-485400;430030120;NULL;47,7989135271498;13,5369073858029
+Nußdorf am Attersee;Seebad Nussdorf am Attersee - Parkplatz;parkplatzinfo.at-486500;430026571;NULL;47,8810513176453;13,5286180548024
+Obertraun;Freibadeanlage Strandbad;drei.at-polygon-36;200678;8575F598-E8FB-C8A0-8635-38C318268FF5;47,5586428554597;13,6781194314057
+Hallstatt;Marktplatz Hallstatt;bernard-direction-hallstatt-diff;430003908;NULL;47,5625226058840;13,6492913971161
+Bad Goisern am Hallstättersee;NULL;drei.at-polygon-37;200188;15CA28C0-7CCD-4EE5-82E1-F3C16B2E19B9;47,6447110132099;13,6179296469359
+Grünau im Almtal;Cumberland Wildpark Grünau;drei.at-polygon-8;401866;3F453DED-BE0F-0D99-6CB1-5A265DDD465F;47,8066949186656;13,9503433296744
+Gmunden;Naherholungsgebiet Grünberg;drei.at-polygon-17;430024030;38CFC9BB-2870-638B-ADC8-9105C10AA941;47,9146913002713;13,8272290453112
+Gmunden;Esplanade Gmunden;drei.at-polygon-11;430035804;CA5F6777-7E1F-B819-9896-EB069E97087D;47,9157607118135;13,7939540776076
+Gmunden;Seeschloss Ort;drei.at-polygon-40;430000203;19AF5AC4-8C5E-95F0-4E8A-8BB97EAB0B59;47,9114432424424;13,7920474725299
+Oberhofen am Irrsee;Strandbad Laiter;drei.at-polygon-34;201790;4B34CA67-BBD6-A3AD-B75D-ED07AF353220;47,9312479242609;13,3074506733599
+Mondsee am Mondsee;Seepromenade Mondsee;drei.at-polygon-32;430004036;8D7B4F1B-C39B-3331-12B0-AC373C70E36A;47,8522078899894;13,3530072855023
+Innerschwand am Mondsee;Badeplatz Loibichl;drei.at-polygon-4;203132;55AC5A0F-3BC2-8571-505F-0782E5B4417C;47,8309065374845;13,3932951710606
+St. Lorenz am Mondsee;Badeplatz Plomberg;drei.at-polygon-5;430003252;2DBDAE70-AF1C-EDC5-E588-B2FD9BB3EEFD;47,8162847059030;13,3656080648481
+Unterach am Attersee;Strandbad Unterach;axess-attersee-6;200494;NULL;47,8034647494400;13,4865609490325
+Steinbach am Attersee;Europabad Weißenbach;drei.at-polygon-12;202200;622DFDD8-DD7A-155C-D061-87206A9501EB;47,7980876655456;13,5322145465087
+Steinbach am Attersee;Solar Strandbad Steinbach;axess-attersee-5;200853;NULL;47,8381122873238;13,5435840745876
+Nußdorf am Attersee;Seebad Nußdorf am Attersee;drei.at-polygon-35;202389;F6BDE17C-7498-F49D-9400-EDB97A76ABAD;47,8819726890462;13,5287848855487
+Weyregg am Attersee;Strandbad Weyregg am Attersee;axess-attersee-4;202317;NULL;47,9024785458983;13,5667814736963
+Weyregg am Attersee;Badeplatz des Landes OÖ;drei.at-polygon-43;200535;6C4ED6DA-EDA0-87B0-6006-4205AFA33CA8;47,9049886896349;13,5665021050538
+Weyregg am Attersee;"Naturbadeplatz Huthausaufsatz ""Bundesforstebad""";drei.at-polygon-42,203393;;AB7F73CE-1AE8-4F3C-6047-EFBC0E1D34CD;47,9062383605987;13,5680551914288
+Attersee am Attersee;Erlebnisbad Attersee;axess-attersee-1;201212;NULL;47,9131161730024;13,5347834400865
+Attersee am Attersee;Sprinzensteinpark Freibadeplatz;drei.at-polygon-33;200057;3360C28E-377F-D394-AFE4-424900DC18B4;47,9122727301218;13,5334906572041
+Seewalchen am Attersee;Freibadeanlage Litzlberg;drei.at-polygon-3;200580;DE38F46C-1F97-F56B-4D88-A25C4AC49907;47,9379567241092;13,5633023002105
+Schörfling am Attersee;Schörflinger Seebad Schönauer;axess-attersee-3;201759;NULL;47,9425350286435;13,5965409999997
+Schörfling;Schörfling Seebad Schönauer;axess-attersee-3;201759;NULL;47,9425350286435;13,5965409999997
+Weyregg am Attersee;Strandbad Weyregg am Attersee;axess-attersee-4;202317;NULL;47,9024785458983;13,5667814736963
