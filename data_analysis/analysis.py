@@ -510,7 +510,7 @@ print("\n" + "="*60)
 print("SAVING MODEL & METADATA")
 print("="*60)
 
-with open('live_model.pkl', 'wb') as f:
+with open('./model_results/live_model.pkl', 'wb') as f:
     pickle.dump(final_model, f)
 final_model.booster_.save_model('./model_results/live_model.txt')
 
