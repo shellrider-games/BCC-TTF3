@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import DensityMap from './charts/DensityMap.jsx'
+import BarChart from './charts/BarChart.jsx'
 import './App.css'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
     <>
       <div>
       <DensityMap />
+      <BarChart />
       </div>
     </>
   )

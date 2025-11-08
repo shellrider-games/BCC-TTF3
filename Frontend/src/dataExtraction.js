@@ -23,3 +23,17 @@ export async function getData() {
         throw error;
     }
 }
+
+export function dateTimeParser(dateString) {
+    const date = new Date(dateString); 
+    
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+        hours: date.getHours(),
+        minutes: date.getMinutes(),
+        seconds: date.getSeconds(),
+        fullDate: date
+    };
+}
