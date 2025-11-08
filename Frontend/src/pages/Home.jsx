@@ -1,11 +1,41 @@
-import './App.css'
-import TypographyH1 from "@/src/components/Typography.jsx";
+import '../App.css'
+import TypographyH1 from "@/components/Typography.jsx";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card.jsx";
+import {Button} from "@/components/ui/button.jsx";
+
+function Input(props) {
+    return null;
+}
 
 function Home() {
 
     return (
         <>
-            <TypographyH1>test</TypographyH1>
+            <div className={"flex flex-col justify-center min-h-screen gap-2"}>
+                <TypographyH1 className={"text-[#E52423]"}>Data. What? Fuck you.</TypographyH1>
+                <Card className="w-full w-fit">
+                    <CardHeader>
+                        <CardTitle>Cool Chart Titsle</CardTitle>
+                        <CardDescription>
+                            Description of the Chart
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        Cool chart
+                    </CardContent>
+                    <CardFooter className="flex-col gap-2">
+                        Legend/Additional Info
+                    </CardFooter>
+                </Card>
+            </div>
         </>
     )
 }

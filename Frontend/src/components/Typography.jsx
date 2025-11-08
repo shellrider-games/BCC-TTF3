@@ -1,7 +1,7 @@
-function TypographyH1({ children }) {
+function TypographyH1({className, children}) {
     return (
-        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-            {children} 12test
+        <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight text-balance ${className}`}>
+            {children}
         </h1>
     )
 }
