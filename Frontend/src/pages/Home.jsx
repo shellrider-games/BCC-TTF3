@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card.jsx";
 import {Button} from "@/components/ui/button.jsx";
 import DensityMap from "@/charts/DensityMap.jsx";
+import BarChart from "@/charts/BarChart.jsx";
 
 function Input(props) {
     return null;
@@ -32,6 +33,18 @@ function Home() {
                     </CardHeader>
                     <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
                         <DensityMap/>
+                    </CardContent>
+                </Card>
+                <Card className="w-full">
+                    <CardHeader>
+                        <CardTitle>Density of Visitors</CardTitle>
+                        <CardDescription>
+                            Heatmap visualization tracking the concentration of individuals across the defined space,
+                            revealing real-time or aggregate traffic patterns.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
+                        <BarChart/>
                     </CardContent>
                 </Card>
             </div>
