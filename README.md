@@ -133,7 +133,7 @@ To run the Flask backend:
 
 3. Run the Flask application:
    ```bash
-   flas run
+   flask run
    ```
 
 4. By default, the Flask server will start on `http://localhost:5000`. You can access the API endpoints through your browser or API client.
