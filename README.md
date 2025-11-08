@@ -26,6 +26,7 @@
   - [Data Schema (Important)](#data-schema-important)
   - [How to Run](#how-to-run)
     - [1. Train the Model](#1-train-the-model)
+    - [2. Run the Flask Backend](#2-run-the-flask-backend)
 
 ---
 
@@ -40,6 +41,7 @@
 ## Technology Stack
 
 * **Modeling:** <INSERT ML LIBRARIES, e.g., Pandas, Scikit-learn, TensorFlow, PyTorch>
+* **Backend:** Flask - A lightweight WSGI web application framework for Python
 * **Dashboard:** <INSERT DASHBOARD TOOL, e.g., Streamlit, Plotly Dash, Tableau>
 * **Data Processing:** <INSERT LIBRARIES, e.g., Pandas, NumPy>
 * **Language:** <INSERT LANGUAGE, e.g., Python 3.10>
@@ -62,23 +64,18 @@ You will need the following tools installed on your system:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <INSERT YOUR REPOSITORY URL HERE>
-    cd <INSERT_PROJECT_NAME>
+    git clone https://github.com/shellrider-games/BCC-TTF3.git
+    cd BCC-TTF3
     ```
 
 2.  **Set up the environment:**
 
     *<Choose the method that matches your project and delete the others>*
 
-    > **Option A: Using `requirements.txt`**
+    > **Using `requirements.txt`**
     > ```bash
+    > cd Backend
     > pip install -r requirements.txt
-    > ```
-
-    > **Option B: Using `conda`**
-    > ```bash
-    > conda env create -f environment.yml
-    > conda activate <YOUR_ENV_NAME>
     > ```
 
 3.  **Other Setup (if any):**
@@ -115,3 +112,29 @@ This script will load your data from the `/data` folder, run feature engineering
 
 ```bash
 python <INSERT PATH TO TRAIN SCRIPT, e.g., src/train_model.py>
+```
+
+### 2. Run the Flask Backend
+
+The project includes a Flask backend that serves as the API server for the application. Flask is a lightweight web framework that provides a simple way to create web endpoints for your model and data.
+
+To run the Flask backend:
+
+1. Navigate to the Backend directory:
+   ```bash
+   cd Backend
+   ```
+
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the Flask application:
+   ```bash
+   flas run
+   ```
+
+4. By default, the Flask server will start on `http://localhost:5000`. You can access the API endpoints through your browser or API client.
+
+**Note:** For development purposes, Flask's built-in server is sufficient. For production deployment, consider using a production-ready WSGI server like Gunicorn or uWSGI.
