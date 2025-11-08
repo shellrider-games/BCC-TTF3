@@ -6,3 +6,5 @@ Backend/__pycache__
 venv
 batch/TTF_POI.csv
 batch/data
+Frontend/package-lock.json
+Frontend/public/Data
