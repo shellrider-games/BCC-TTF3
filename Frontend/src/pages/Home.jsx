@@ -22,19 +22,16 @@ function Home() {
         <>
             <div className={"flex flex-col justify-center min-h-screen gap-2"}>
                 <TypographyH1 className={"text-[#E52423]"}>Data. What? Fuck you.</TypographyH1>
-                <Card className="w-full">
+                <Card className="w-full pb-0">
                     <CardHeader>
                         <CardTitle>Cool Chart Titsle</CardTitle>
                         <CardDescription>
                             Description of the Chart
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
                         <DensityMap/>
                     </CardContent>
-                    <CardFooter className="flex-col gap-2">
-                        Legend/Additional Info
-                    </CardFooter>
                 </Card>
             </div>
         </>

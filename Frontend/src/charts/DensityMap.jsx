@@ -48,6 +48,29 @@ export default function DensityMap() {
         };
     }, [data]);
 
+    // Handle map resize to ensure it fills container
+    useEffect(() => {
+        if (!mapRef.current) return;
+
+        const handleResize = () => {
+            if (mapRef.current) {
+                console.log('Resizing map...');
+                mapRef.current.invalidateSize();
+            }
+        };
+
+        // Initial resize after a short delay to ensure container is rendered
+        const resizeTimer = setTimeout(handleResize, 100);
+
+        // Add window resize listener
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [data]);
+
     function drawDensityMap(data) {
         const map = mapRef.current;
         if (!map) return;
@@ -82,7 +105,7 @@ export default function DensityMap() {
 
     if (!data) {
         return (
-            <div style={{ height: '90vh', width: '90vw'}}>
+            <div style={{height: '100%', width: '100%', minHeight: '400px'}}>
                 Loading map data...
             </div>
         );
@@ -91,7 +114,11 @@ export default function DensityMap() {
     return (
         <div
             ref={mapContainerRef}
-            style={{height: '100vh', width: '100vh'}}
+            style={{
+                height: '100%',
+                width: '100%',
+                minHeight: '400px'
+            }}
         />
     );
 }
