@@ -4,3 +4,5 @@ ttg/
 scrapeWeatherData
 Backend/__pycache__
 venv
+batch/TTF_POI.csv
+batch/data
