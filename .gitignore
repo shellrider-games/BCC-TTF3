@@ -1,2 +1,5 @@
 .DS_Store
 ttg/
+.idea
+scrapeWeatherData
+Backend/__pycache__
