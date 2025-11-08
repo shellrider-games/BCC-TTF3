@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { getData, dateTimeParser } from '../dataExtraction.js';
 import React, { useEffect, useRef, useState } from 'react';
+import {Skeleton} from "@/components/ui/skeleton.jsx";
 
 export default function BarChart() {
     const svgRef = useRef(null);
@@ -71,6 +72,15 @@ export default function BarChart() {
         const marginLeft = 40;
 
         console.log('Drawing chart with dimensions:', {width, height});
+        console.log('Chart margins:', {marginTop, marginRight, marginBottom, marginLeft});
+        console.log('Chart drawing area:', {
+            left: marginLeft,
+            right: width - marginRight,
+            top: marginTop,
+            bottom: height - marginBottom,
+            width: width - marginLeft - marginRight,
+            height: height - marginTop - marginBottom
+        });
 
         // Group data by hour and count occurrences
         const hourCounts = d3.rollups(
@@ -136,10 +146,50 @@ export default function BarChart() {
     }
 
     if (!data) {
+        const mockBarCount = 24; // Assuming hourly data like the real chart
+        const bars = Array.from({length: mockBarCount}, (_, i) => i);
+        const randomHeights = bars.map(() => Math.random() * 350 + 10); // 10% to 90% height
+
         return (
-            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className={"rounded-xl"}>
-                <div className="h-full w-full flex items-center justify-center">
-                    Loading chart...
+            <div
+                ref={containerRef}
+                style={{
+                    height: '100%',
+                    width: '100%',
+                    minHeight: '400px',
+                    position: 'relative'
+                }}
+                className={"rounded-xl"}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: 40, // Matches marginLeft
+                        right: 20, // Matches marginRight
+                        top: 30, // Matches marginTop
+                        bottom: 40, // Matches marginBottom
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    {bars.map((_, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                flex: 1,
+                                margin: '0 1px' // Small spacing between bars
+                            }}
+                        >
+                            <Skeleton
+                                className="w-full"
+                                style={{
+                                    height: `${randomHeights[index]}px`, // Use pre-generated random heights
+                                    minHeight: '15px'
+                                }}
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
         );
