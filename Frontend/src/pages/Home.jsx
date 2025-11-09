@@ -20,6 +20,7 @@ import {ChevronDownIcon} from "lucide-react";
 import {Input} from "@/components/ui/input.jsx";
 import {getData} from "@/dataExtraction.js";
 import HoteList from "@/charts/HoteList.jsx";
+import poiList from "@/data/poi.json";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -134,7 +135,8 @@ function Home() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                            <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity}/>
+                            <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity} selectedTime={time}
+                                        selectedDate={date.toString()}/>
                         </CardContent>
                     </Card>
                     <Card className="w-96 pb-0 z-1 grow-3">

@@ -6,7 +6,7 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data, zoom}) {
+export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate}) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
@@ -116,7 +116,7 @@ export default function DensityMap({data, zoom}) {
         });
 
         map.on('click', (e) => {
-            const { lat, lng } = e.latlng;
+            const {lat, lng} = e.latlng;
             let nearestPoint = null;
             let minDistance = Infinity;
 
@@ -192,8 +192,8 @@ export default function DensityMap({data, zoom}) {
 
     if (!data) {
         return (
-            <div style={{ height: '100%', width: '100%', minHeight: '400px' }} className="rounded-xl">
-                <Skeleton className="h-full w-full" />
+            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className="rounded-xl">
+                <Skeleton className="h-full w-full"/>
             </div>
         );
     }
@@ -201,7 +201,7 @@ export default function DensityMap({data, zoom}) {
     return (
         <div
             ref={mapContainerRef}
-            style={{ height: '100%', width: '100%', minHeight: '400px' }}
+            style={{height: '100%', width: '100%', minHeight: '400px'}}
             className="rounded-xl"
         />
     );
