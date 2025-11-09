@@ -2,8 +2,9 @@ import * as d3 from 'd3';
 import { getData, dateTimeParser } from '../dataExtraction.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
+import { dateTimeParser } from '../dataExtraction.js';
 
-export default function BarChart() {
+export default function BarChart({ data, selectedHour, setSelectedHour, selectedDate }) {
     const svgRef = useRef(null);
     const containerRef = useRef(null);
     const [data, setData] = useState(null);
@@ -54,15 +55,15 @@ export default function BarChart() {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+export default function BarChart({ data, selectedHour, setSelectedHour, selectedDate }) {
+  const svgRef = useRef(null);
 
     useEffect(() => {
         if (!data || !svgRef.current) return;
-
-        // Clear previous chart
         d3.select(svgRef.current).selectAll("*").remove();
-
         drawBarChart(data);
-    }, [data, dimensions]);
+    }, [data, selectedHour, selectedDate]); // Added selectedDate to dependencies
+
 
     function drawBarChart(data) {
         const {width, height} = dimensions;
@@ -71,39 +72,60 @@ export default function BarChart() {
         const marginBottom = 40;
         const marginLeft = 40;
 
-        console.log('Drawing chart with dimensions:', {width, height});
-        console.log('Chart margins:', {marginTop, marginRight, marginBottom, marginLeft});
-        console.log('Chart drawing area:', {
-            left: marginLeft,
-            right: width - marginRight,
-            top: marginTop,
-            bottom: height - marginBottom,
-            width: width - marginLeft - marginRight,
-            height: height - marginTop - marginBottom
-        });
+    // Filter data by selected date first
+    let filteredData = data;
+    if (selectedDate) {
+      filteredData = data.filter(d => {
+        const parsed = dateTimeParser(d.timestamp);
+        const dataDate = parsed.fullDate;
+        return (
+          dataDate.getFullYear() === selectedDate.getFullYear() &&
+          dataDate.getMonth() === selectedDate.getMonth() &&
+          dataDate.getDate() === selectedDate.getDate()
+        );
+      });
+    }
 
-        // Group data by hour and count occurrences
-        const hourCounts = d3.rollups(
-            data,
-            v => v.length, // Count entries per hour
-            d => dateTimeParser(d.timestamp).hours
-        ).map(([hour, count]) => ({ hour, count }));
+    console.log('Filtered data by date:', filteredData.length, 'out of', data.length);
 
-        // Sort by hour
-        hourCounts.sort((a, b) => a.hour - b.hour);
+    // Then count by hours
+    const hourCounts = d3.rollups(
+      filteredData,
+      v => v.length,
+      d => dateTimeParser(d.timestamp).hours
+    ).map(([hour, count]) => ({ hour, count }));
 
-        console.log('Hour counts:', hourCounts);
+    hourCounts.sort((a, b) => a.hour - b.hour);
+    console.log('Hour counts:', hourCounts);
 
-        // Create scales
-        const x = d3.scaleBand()
-            .domain(hourCounts.map(d => d.hour))
-            .range([marginLeft, width - marginRight])
-            .padding(0.1);
+    // If no data for selected date, show empty chart with message
+    if (hourCounts.length === 0) {
+      const svg = d3.select(svgRef.current)
+        .attr("width", width)
+        .attr("height", height)
+        .attr("viewBox", [0, 0, width, height])
+        .attr("style", "max-width: 100%; height: auto;");
 
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(hourCounts, d => d.count)])
-            .nice()
-            .range([height - marginBottom, marginTop]);
+      svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#666")
+        .style("font-size", "18px")
+        .text("No data available for selected date");
+
+      return;
+    }
+
+    const x = d3.scaleBand()
+      .domain(hourCounts.map(d => d.hour))
+      .range([marginLeft, width - marginRight])
+      .padding(0.1);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(hourCounts, d => d.count)])
+      .nice()
+      .range([height - marginBottom, marginTop]);
 
         // Create SVG
         const svg = d3.select(svgRef.current)
@@ -113,37 +135,46 @@ export default function BarChart() {
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("style", "display: block; margin: auto;");
 
-        // Add bars
-        svg.append("g")
-            .attr("fill", "steelblue")
-            .selectAll("rect")
-            .data(hourCounts)
-            .join("rect")
-            .attr("x", d => x(d.hour))
-            .attr("y", d => y(d.count))
-            .attr("height", d => y(0) - y(d.count))
-            .attr("width", x.bandwidth());
+    svg.append("g")
+      .selectAll("rect")
+      .data(hourCounts)
+      .join("rect")
+      .attr("x", d => x(d.hour))
+      .attr("y", d => y(d.count))
+      .attr("height", d => y(0) - y(d.count))
+      .attr("width", x.bandwidth())
+      .attr("fill", d => d.hour === selectedHour ? "orange" : "steelblue")
+      .attr("cursor", "pointer")
+      .on("click", (event, d) => {
+        setSelectedHour(d.hour === selectedHour ? null : d.hour);
+      })
+      .on("mouseover", function () {
+        d3.select(this).attr("opacity", 0.7);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("opacity", 1);
+      });
 
-        // Add x-axis
-        svg.append("g")
-            .attr("transform", `translate(0,${height - marginBottom})`)
-            .call(d3.axisBottom(x).tickFormat(d => `${d}:00`))
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
+    // Add x-axis
+    svg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x).tickFormat(d => `${d}:00`))
+      .selectAll("text")
+      .attr("transform", "rotate(-45)")
+      .style("text-anchor", "end");
 
-        // Add y-axis
-        svg.append("g")
-            .attr("transform", `translate(${marginLeft},0)`)
-            .call(d3.axisLeft(y))
-            .call(g => g.select(".domain").remove())
-            .call(g => g.append("text")
-                .attr("x", -marginLeft)
-                .attr("y", 10)
-                .attr("fill", "currentColor")
-                .attr("text-anchor", "start")
-                .text("Count"));
-    }
+    // Add y-axis
+    svg.append("g")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(d3.axisLeft(y))
+      .call(g => g.select(".domain").remove())
+      .call(g => g.append("text")
+        .attr("x", -marginLeft)
+        .attr("y", 10)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .text("Count"));
+  }
 
     if (!data) {
         const mockBarCount = 24; // Assuming hourly data like the real chart
