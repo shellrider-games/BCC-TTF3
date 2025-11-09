@@ -18,6 +18,7 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.j
 import {Calendar} from "@/components/ui/calendar.jsx";
 import {ChevronDownIcon} from "lucide-react";
 import {Input} from "@/components/ui/input.jsx";
+import {getData} from "@/dataExtraction.js";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -31,20 +32,16 @@ function Home() {
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
 
     useEffect(() => {
-        console.log('TIME CHANGED:', time);
-    }, [time])
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('YOUR_API_ENDPOINT_HERE');
+                const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=2025-11-01');
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const result = await response.json();
-                setData(result);
+                const csvText = await response.text();
+                setData(await getData(csvText));
 
             } catch (err) {
                 setError(err.message);
@@ -53,8 +50,20 @@ function Home() {
             }
         };
 
+        async function loadData() {
+            try {
+                const loadedData = await getData();
+                console.log('Data loaded in App:', loadedData);
+                setData(loadedData);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
         fetchData();
-    }, []);
+        //loadData();
+        console.log("testoooo")
+    }, [date, time]);
 
 
     return (
@@ -118,7 +127,7 @@ function Home() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                        <DensityMap/>
+                        <DensityMap passedData={data}/>
                     </CardContent>
                 </Card>
                 <Card className="w-full">
@@ -130,7 +139,8 @@ function Home() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="h-fit overflow-clip">
-                        <BarChart/>
+                        <BarChart data={data} selectedHour={time?.substring(0, 2)}
+                                  selectedDate={date}/>
                     </CardContent>
                 </Card>
             </div>
