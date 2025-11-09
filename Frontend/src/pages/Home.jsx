@@ -33,7 +33,8 @@ function Home() {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=2025-11-01');
+            //const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=2025-11-01');
+            const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=' + date.toISOString().split('T')[0]);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
