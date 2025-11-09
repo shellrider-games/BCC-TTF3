@@ -9,7 +9,15 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate, selectedPoi, pinLocation}) {
+export default function DensityMap({
+                                       data,
+                                       zoom,
+                                       setSelectedCity,
+                                       selectedTime,
+                                       selectedDate,
+                                       selectedPoi,
+                                       pinLocation
+                                   }) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
@@ -50,13 +58,13 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
                 mapRef.current = null;
             }
         };
-    }, [data, zoom]);
+    }, [data]);
 
     useEffect(() => {
         if (!mapRef.current || !pinLocation || !zoom) return;
 
         const map = mapRef.current;
-
+        map.removeLayer(heatLayerRef.current);
         map.flyTo([pinLocation.lat, pinLocation.lng], zoom.zoom, {
             animate: true,
             duration: 1.5 // seconds, adjust as needed
