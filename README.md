@@ -65,6 +65,9 @@ XISKO;47.83468443576882;13.1133425789364
 This project is inteded to retrain the LightGBM model daily and fetching new weather data.
 We have a more detailed documentation of the data pipeline [here](documentation/DataPipeline.md)
 
+## Contributors
+<img src = "https://contrib.rocks/image?repo=shellrider-games/BCC-TTF3"/>
+
 ## License
 
 All code in this repository is licensed under the MIT License.
@@ -73,7 +76,7 @@ All image assets and documentation in this repository is licensed under CC-BY-4.
 
 ### MIT License
 
-Copyright 2025 Georg Becker BSc., Sofiia-Khrystyna Borysiuk, Laura Cesar BSc., Ing. Xaver Drabik
+Copyright 2025 Georg Becker BSc., Sofiia-Khrystyna Borysiuk, Laura Cesar BSc., Ing. Xaver Drabik, Florian Schmid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
