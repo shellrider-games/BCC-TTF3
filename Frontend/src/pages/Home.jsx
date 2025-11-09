@@ -1,5 +1,5 @@
 import '../App.css'
-import TypographyH1 from "@/components/Typography.jsx";
+import {TypographyH1, TypographyH3} from "@/components/Typography.jsx";
 import {
     Card,
     CardAction,
@@ -22,7 +22,8 @@ function Home() {
     return (
         <>
             <div className={"flex flex-col justify-center min-h-screen gap-2"}>
-                <TypographyH1 className={"text-[#E52423]"}>Data. What? Fuck you.</TypographyH1>
+                <TypographyH1 className={"text-[#E52423]"}>TourSight</TypographyH1>
+                <TypographyH3 className={"text-[#921110]"}>Smart predictions. Smarter tourism.</TypographyH3>
                 <Card className="w-full pb-0">
                     <CardHeader>
                         <CardTitle>Density of Visitors</CardTitle>
