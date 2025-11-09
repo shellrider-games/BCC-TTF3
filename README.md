@@ -70,3 +70,6 @@ This project uses the Open-Meteo v1 API to get weather data which used in the pr
 TrackerID;Latitude;Longitude
 XISKO;47.83468443576882;13.1133425789364
 ```
+
+## DataPipeline
+We have a more detailed documentation of the data pipeline [here](documentation/DataPipeline.md)
