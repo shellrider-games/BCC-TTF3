@@ -21,7 +21,7 @@ export default function BarChart({data, selectedHour, selectedDate}) {
         const marginTop = 30;
         const marginRight = 20;
         const marginBottom = 40;
-        const marginLeft = 40;
+        const marginLeft = 80;
 
         // Filter data by selected date first
         let filteredData = data;
@@ -42,9 +42,9 @@ export default function BarChart({data, selectedHour, selectedDate}) {
         // Then count by hours
         const hourCounts = d3.rollups(
             filteredData,
-            v => v.length,
+            v => d3.sum(v, d => +d.value),
             d => dateTimeParser(d.timestamp).hours
-        ).map(([hour, count]) => ({hour, count}));
+        ).map(([hour, value]) => ({ hour, value }));
 
         hourCounts.sort((a, b) => a.hour - b.hour);
         console.log('Hour counts:', hourCounts);
@@ -74,11 +74,10 @@ export default function BarChart({data, selectedHour, selectedDate}) {
             .padding(0.1);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(hourCounts, d => d.count)])
+            .domain([0, d3.max(hourCounts, d => d.value)])
             .nice()
             .range([height - marginBottom, marginTop]);
 
-        // Create SVG
         const svg = d3.select(svgRef.current)
             .attr("width", "100%")
             .attr("height", "100%")
@@ -111,13 +110,12 @@ export default function BarChart({data, selectedHour, selectedDate}) {
             .attr("transform", `translate(0,${height - marginBottom})`)
             .call(d3.axisBottom(x).tickFormat(d => `${d}:00`))
             .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "center");
 
         // Add y-axis
         svg.append("g")
             .attr("transform", `translate(${marginLeft},0)`)
-            .call(d3.axisLeft(y))
+            .call(d3.axisLeft(y).tickFormat(d => d3.format(".0f")(d)))
             .call(g => g.select(".domain").remove())
             .call(g => g.append("text")
                 .attr("x", -marginLeft)
