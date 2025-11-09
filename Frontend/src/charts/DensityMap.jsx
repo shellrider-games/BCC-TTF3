@@ -1,43 +1,23 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
-import { getData } from '../dataExtraction.js';
+import { getData, dateTimeParser } from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.heat';
 
-export default function DensityMap() {
+export default function DensityMap({ data, selectedHour, setSelectedHour, selectedDate }) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
     const legendRef = useRef(null);
-    const [data, setData] = useState(null);
 
     useEffect(() => {
-        async function loadData() {
-            try {
-                const loadedData = await getData();
-                console.log('Data loaded:', loadedData);
-                setData(loadedData);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-        loadData();
-    }, []);
-
-    useEffect(() => {
-        if (!data) return;
-
         if (!mapRef.current && mapContainerRef.current) {
             mapRef.current = L.map(mapContainerRef.current).setView([47.9062383605987, 13.5680551914288], 7.5);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(mapRef.current);
-        }
-
-        if (mapRef.current) {
-            drawDensityMap(data);
         }
 
         return () => {
@@ -46,9 +26,15 @@ export default function DensityMap() {
                 mapRef.current = null;
             }
         };
-    }, [data]);
+    }, []);
 
-    function drawDensityMap(data) {
+    useEffect(() => {
+        if (data && mapRef.current) {
+            drawDensityMap(data, selectedHour);
+        }
+    }, [data, selectedHour, selectedDate]);
+
+    function drawDensityMap(data, selectedHour) {
         const map = mapRef.current;
         if (!map) return;
 
@@ -59,11 +45,35 @@ export default function DensityMap() {
             map.removeControl(legendRef.current);
         }
 
-        const heatPoints = data
+        let filteredData = data;
+        if (selectedDate) {
+            filteredData = filteredData.filter(d => {
+                const parsed = dateTimeParser(d.timestamp);
+                const dataDate = parsed.fullDate;
+
+                // Filter by date (year, month, day)
+                const sameDate = (
+                    dataDate.getFullYear() === selectedDate.getFullYear() &&
+                    dataDate.getMonth() === selectedDate.getMonth() &&
+                    dataDate.getDate() === selectedDate.getDate()
+                );
+
+                // Filter by time (hour and minute) if time is set
+                // const sameTime = (
+                //     dataDate.getHours() === selectedDate.getHours() &&
+                //     dataDate.getMinutes() === selectedDate.getMinutes()
+                // );
+
+                // return sameDate && sameTime;
+                return sameDate;
+            });
+        }
+
+        const heatPoints = filteredData
             .filter(d => d.latitude_coordinate && d.longitude_coordinate)
             .map(d => [d.latitude_coordinate, d.longitude_coordinate, 1.0]);
 
-        console.log('Heat points created:', heatPoints.length);
+        console.log('Heat points created:', heatPoints.length, 'for hour:', selectedHour);
 
         heatLayerRef.current = L.heatLayer(heatPoints, {
             radius: 25,
@@ -80,17 +90,9 @@ export default function DensityMap() {
         }).addTo(map);
     }
 
-    if (!data) {
-        return (
-            <div style={{ height: '90vh', width: '90vw'}}>
-                Loading map data...
-            </div>
-        );
-    }
-
     return (
-        <div 
-            ref={mapContainerRef} 
+        <div
+            ref={mapContainerRef}
             style={{ height: '90vh', width: '90vw' }}
         />
     );

@@ -78,7 +78,7 @@ function App() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
         <div>
           <h3 style={{ margin: '0 0 10px 0' }}>Density Map</h3>
-          <DensityMap data={data} selectedHour={selectedHour} selectedDate={date} />
+          <DensityMap data={data} selectedHour={selectedHour} setSelectedHour={setSelectedHour} selectedDate={date} />
         </div>
         <div>
           <h3 style={{ margin: '0 0 10px 0' }}>Hourly Distribution</h3>
