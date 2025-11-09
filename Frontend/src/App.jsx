@@ -13,8 +13,30 @@ function App() {
 
   const handleDateChange = (date) => {
     setDate(date);
-    // Reset hour selection when date changes
     setSelectedHour(null);
+  };
+
+  const handleHourChange = (hour) => {
+    setSelectedHour(hour);
+
+    // Update the date picker to reflect the selected hour
+    if (hour !== null) {
+      if (date) {
+        // If a date is already selected, just update its hour
+        const newDate = new Date(date);
+        newDate.setHours(hour);
+        newDate.setMinutes(0);
+        newDate.setSeconds(0);
+        setDate(newDate);
+      } else {
+        // If no date is selected, create a new date with current date and selected hour
+        const newDate = new Date();
+        newDate.setHours(hour);
+        newDate.setMinutes(0);
+        newDate.setSeconds(0);
+        setDate(newDate);
+      }
+    }
   };
 
   const clearAllFilters = () => {
@@ -78,14 +100,14 @@ function App() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
         <div>
           <h3 style={{ margin: '0 0 10px 0' }}>Density Map</h3>
-          <DensityMap data={data} selectedHour={selectedHour} setSelectedHour={setSelectedHour} selectedDate={date} />
+          <DensityMap data={data} selectedHour={selectedHour} setSelectedHour={handleHourChange} selectedDate={date} />
         </div>
         <div>
           <h3 style={{ margin: '0 0 10px 0' }}>Hourly Distribution</h3>
           <BarChart
             data={data}
             selectedHour={selectedHour}
-            setSelectedHour={setSelectedHour}
+            setSelectedHour={handleHourChange}
             selectedDate={date}
           />
         </div>
