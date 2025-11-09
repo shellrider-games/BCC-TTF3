@@ -3,14 +3,31 @@ import React, {useEffect, useRef, useState} from 'react';
 import {getData} from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate, selectedPoi}) {
+export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate, selectedPoi, pinLocation}) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
     const legendRef = useRef(null);
+    const pinMarkerRef = useRef(null);
+
+    const defaultIcon = L.icon({
+        iconUrl,
+        iconRetinaUrl,
+        shadowUrl,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    L.Marker.prototype.options.icon = defaultIcon;
+
 
     useEffect(() => {
         if (!data) return;
@@ -33,7 +50,18 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
                 mapRef.current = null;
             }
         };
-    }, [data, zoom, selectedPoi, selectedDate, selectedTime]);
+    }, [data, zoom]);
+
+    useEffect(() => {
+        if (!mapRef.current || !pinLocation || !zoom) return;
+
+        const map = mapRef.current;
+
+        map.flyTo([pinLocation.lat, pinLocation.lng], zoom.zoom, {
+            animate: true,
+            duration: 1.5 // seconds, adjust as needed
+        });
+    }, [pinLocation, zoom]);
 
     // Handle map resize to ensure it fills container
     useEffect(() => {
@@ -58,13 +86,31 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
         };
     }, [data]);
 
+
+    useEffect(() => {
+        console.log(pinLocation)
+        if (!mapRef.current || !pinLocation) return;
+
+        const map = mapRef.current;
+
+        // Remove previous pin if it exists
+        if (pinMarkerRef.current) {
+            map.removeLayer(pinMarkerRef.current);
+            pinMarkerRef.current = null;
+        }
+
+        // Add new pin and open its popup
+        pinMarkerRef.current = L.marker([pinLocation.lat, pinLocation.lng], {
+            riseOnHover: true,
+        }).addTo(map)
+    }, [pinLocation]);
+
     function drawDensityMap(data) {
         const map = mapRef.current;
         if (!map) return;
 
         if (heatLayerRef.current) map.removeLayer(heatLayerRef.current);
 
-        console.log(data.installationId + ":" + selectedPoi)
         const heatPoints = data
             .filter(d => d.latitude_coordinate && d.longitude_coordinate)
             .filter(d => !selectedPoi || d.installationId === selectedPoi)

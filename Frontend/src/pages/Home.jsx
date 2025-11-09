@@ -53,8 +53,10 @@ function Home() {
         },
         zoom: 9
     });
-
-    console.log(poiList)
+    const [pinLocation, setPinLocation] = useState({
+        lat: 47.7562383605987,
+        lng: 13.5680551914288
+    })
 
     const fetchData = async () => {
         try {
@@ -169,7 +171,7 @@ function Home() {
                         </CardHeader>
                         <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
                             <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity} selectedTime={time}
-                                        selectedDate={date.toString()} selectedPoi={selectedPoi}/>
+                                        selectedDate={date.toString()} selectedPoi={selectedPoi} pinLocation={pinLocation}/>
                         </CardContent>
                     </Card>
                     <Card className="w-96 pb-0 z-1 grow-3">
@@ -180,7 +182,7 @@ function Home() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className=" overflow-y-scroll">
-                            <HoteList setZoom={setZoom}/>
+                            <HoteList setZoom={setZoom} setPinLocation={setPinLocation}/>
                         </CardContent>
                     </Card>
                 </div>

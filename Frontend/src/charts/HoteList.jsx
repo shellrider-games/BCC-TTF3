@@ -1,12 +1,12 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 // Assuming the path to your data is correct
 import hotels from '../../public/Data/csvjson.json';
-import {Button} from "@/components/ui/button.jsx";
-import {Input} from "@/components/ui/input.jsx";
-import {Label} from "@/components/ui/label.jsx";
-import {RotateCcwIcon} from "@/components/ui/icons/lucide-rotate-ccw.jsx";
+import { Button } from "@/components/ui/button.jsx";
+import { Input } from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import { RotateCcwIcon } from "@/components/ui/icons/lucide-rotate-ccw.jsx";
 
-export default function HotelList({setZoom}) {
+export default function HotelList({ setZoom, setPinLocation }) {
     // State to store the user's search input (initialize to an empty string for easier filtering)
     const [searchTerm, setSearchTerm] = useState('');
     // State to store the list of hotels that match the search term
@@ -75,6 +75,10 @@ export default function HotelList({setZoom}) {
                                     },
                                     zoom: 15
                                 });
+                                setPinLocation({
+                                    lat: parseFloat(hotel.latitude),
+                                    lng: parseFloat(hotel.longitude)
+                                })
                             }}
                         >
                             {hotel.title}
