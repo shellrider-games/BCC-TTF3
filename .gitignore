@@ -12,3 +12,4 @@ raw_data/
 cross_val_plots/
 Frontend/package-lock.json
 Frontend/public/Data
+Backend/data/
