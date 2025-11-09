@@ -20,7 +20,16 @@ import {ChevronDownIcon} from "lucide-react";
 import {Input} from "@/components/ui/input.jsx";
 import {getData} from "@/dataExtraction.js";
 import HoteList from "@/charts/HoteList.jsx";
-import poiList from "@/data/poi.json";
+import poiList from "@/../public/Data/poi.json";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select.jsx";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -33,6 +42,9 @@ function Home() {
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
     const [selectedCity, setSelectedCity] = useState("")
+    const [selectedPoi, setSelectedPoi] = useState(undefined);
+
+
     //const [zoom, setZoom] = useState(9);
     const [zoom, setZoom] = useState({
         center: {
@@ -41,6 +53,8 @@ function Home() {
         },
         zoom: 9
     });
+
+    console.log(poiList)
 
     const fetchData = async () => {
         try {
@@ -80,7 +94,26 @@ function Home() {
                         <TypographyH1 className={"text-[#E52423]"}>TourSight</TypographyH1>
                         <TypographyH3 className={"text-[#921110]"}>Smart predictions. Smarter tourism.</TypographyH3>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 items-end">
+                        <Select onValueChange={setSelectedPoi} value={selectedPoi}>
+                            <SelectTrigger className="w-fit">
+                                <SelectValue placeholder="Select a Tracker ID"/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Tracker IDs</SelectLabel>
+                                    {
+                                        poiList.map((poi, index) => (
+                                            <SelectItem key={index} value={poi.TrackerID} onSelect={() => {
+                                                console.log("selectedCity")
+                                            }}>
+                                                {poi.TrackerID}
+                                            </SelectItem>
+                                        ))
+                                    }
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                         <div className="flex flex-col gap-3">
                             <Label htmlFor="date-picker" className="px-1">
                                 Date
@@ -136,7 +169,7 @@ function Home() {
                         </CardHeader>
                         <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
                             <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity} selectedTime={time}
-                                        selectedDate={date.toString()}/>
+                                        selectedDate={date.toString()} selectedPoi={selectedPoi}/>
                         </CardContent>
                     </Card>
                     <Card className="w-96 pb-0 z-1 grow-3">

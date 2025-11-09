@@ -37,8 +37,6 @@ export default function BarChart({data, selectedHour, selectedDate}) {
             });
         }
 
-        console.log('Filtered data by date:', filteredData.length, 'out of', data.length);
-
         // Then count by hours
         const hourCounts = d3.rollups(
             filteredData,
@@ -47,7 +45,6 @@ export default function BarChart({data, selectedHour, selectedDate}) {
         ).map(([hour, value]) => ({hour, value}));
 
         hourCounts.sort((a, b) => a.hour - b.hour);
-        console.log('Hour counts:', hourCounts);
 
         // If no data for selected date, show empty chart with message
         if (hourCounts.length === 0) {
@@ -85,25 +82,17 @@ export default function BarChart({data, selectedHour, selectedDate}) {
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("style", "display: block; margin: auto;");
 
-        // Debug logs to validate the issue
-        console.log("Y-scale domain:", y.domain());
-        console.log("Y-scale range:", y.range());
-        console.log("Sample data point:", hourCounts[0]);
-        console.log("y(0):", y(0));
-        console.log("y(sample.value):", hourCounts[0] ? y(hourCounts[0].value) : "N/A");
-        
+
         svg.append("g")
             .selectAll("rect")
             .data(hourCounts)
             .join("rect")
             .attr("x", d => x(d.hour))
             .attr("y", d => {
-                console.log(`Bar for hour ${d.hour}: y=${y(d.value)}, value=${d.value}`);
                 return y(d.value);
             })
             .attr("height", d => {
                 const height = y(0) - y(d.value);
-                console.log(`Bar height for hour ${d.hour}: height=${height}`);
                 return height;
             })
             .attr("width", x.bandwidth())

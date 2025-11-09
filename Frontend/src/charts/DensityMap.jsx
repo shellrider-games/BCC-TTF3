@@ -6,7 +6,7 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate}) {
+export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate, selectedPoi}) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
@@ -33,7 +33,7 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
                 mapRef.current = null;
             }
         };
-    }, [data, zoom]);
+    }, [data, zoom, selectedPoi, selectedDate, selectedTime]);
 
     // Handle map resize to ensure it fills container
     useEffect(() => {
@@ -64,8 +64,10 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
 
         if (heatLayerRef.current) map.removeLayer(heatLayerRef.current);
 
+        console.log(data.installationId + ":" + selectedPoi)
         const heatPoints = data
             .filter(d => d.latitude_coordinate && d.longitude_coordinate)
+            .filter(d => !selectedPoi || d.installationId === selectedPoi)
             .map(d => ({
                 lat: d.latitude_coordinate,
                 lng: d.longitude_coordinate,
