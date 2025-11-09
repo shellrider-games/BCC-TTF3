@@ -30,7 +30,7 @@ export default function DensityMap() {
         if (!data) return;
 
         if (!mapRef.current && mapContainerRef.current) {
-            mapRef.current = L.map(mapContainerRef.current).setView([47.9062383605987, 13.5680551914288], 7.5);
+            mapRef.current = L.map(mapContainerRef.current).setView([47.7562383605987, 13.5680551914288], 9);
             
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
