@@ -6,6 +6,7 @@ import requests
 import requests_cache
 from retry_requests import retry
 from datetime import datetime
+import numpy as np
    
 parser = argparse.ArgumentParser(
     description="Run a batch job using latitude and longitude coordinates."
@@ -22,7 +23,8 @@ args = parser.parse_args()
 now = datetime.now()
 current_time_string = now.strftime("%Y-%m-%d-%H")
 
-df = pd.read_csv(args.filepath,usecols=['TrackerID','Latitude', 'Longitude'], sep=';',decimal=',')
+df = pd.read_csv(args.filepath,usecols=['Name','Latitude', 'Longitude'], sep=';',decimal=',')
+
 
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
@@ -65,7 +67,7 @@ for row in df.itertuples():
         inclusive = "left"
     )}
 
-    hourly_data["poi_id'"] = row.TrackerID
+    hourly_data["poi_id"] = row.Name
     hourly_data["temperature_2m"] = hourly_temperature_2m
     hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
     hourly_data["precipitation"] = hourly_precipitation
@@ -73,11 +75,44 @@ for row in df.itertuples():
     hourly_data["cloud_cover_low"] = hourly_cloud_cover_low
     hourly_data["cloud_cover_mid"] = hourly_cloud_cover_mid
     hourly_data["cloud_cover_high"] = hourly_cloud_cover_high
+    hourly_data["is_holiday"] = False
 
     hourly_dataframe = pd.DataFrame(data = hourly_data)
 
     dataframes.append(hourly_dataframe)
-    hourly_dataframe.to_csv("data/"+current_time_string+row.TrackerID+".csv",index=False)
+    hourly_dataframe.to_csv("data/"+current_time_string+str(row.Name)+".csv",index=False)
 
 concatenated_df = pd.concat(dataframes, ignore_index=True)
 concatenated_df.to_csv("data/"+current_time_string+"ALL_POI.csv",index=False)
+concatenated_df['date'] = pd.to_datetime(concatenated_df['date'])
+grouped_by_time = concatenated_df.groupby('date')
+
+output_dir = "data/" 
+
+for timestamp, group_df in grouped_by_time:
+    poi_list = df["Name"]
+    simulated_weather_data = {
+        'poi_id': poi_list,
+        # Simulate slightly different weather for each POI
+        'temperature_2m': np.random.uniform(10.0, 14.0, size=len(poi_list)),
+        'relative_humidity_2m': np.random.uniform(70.0, 80.0, size=len(poi_list)),
+        'precipitation': np.random.choice([0.0, 0.1], size=len(poi_list), p=[0.9, 0.1]),
+        'wind_speed_10m': np.random.uniform(3.0, 7.0, size=len(poi_list)),
+        'cloud_cover_low': np.random.uniform(10.0, 30.0, size=len(poi_list)),
+        'cloud_cover_mid': np.random.uniform(40.0, 60.0, size=len(poi_list)),
+        'cloud_cover_high': np.random.uniform(0.0, 20.0, size=len(poi_list)),
+        'is_holiday': [False] * len(poi_list) # (Example: Check a holiday calendar)
+    }
+    future_weather_df = pd.DataFrame(simulated_weather_data)
+    
+    # Format the timestamp for a clean file name (e.g., YYYY-MM-DD-HH)
+    time_string = timestamp.strftime("%Y-%m-%d-%H")
+    
+    # Construct the file path
+    filename = f"{output_dir}{time_string}_all_poi.csv"
+    group_df = group_df.drop(axis=1, columns=["date"])
+
+    print("Random Data: " + str(future_weather_df.shape) + "Actual Data: " + str(group_df.shape))
+    # Save the group DataFrame to the new file
+    # Index is excluded as it's not useful here
+    group_df.to_csv(filename, index=False)
