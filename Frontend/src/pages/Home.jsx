@@ -19,6 +19,7 @@ import {Calendar} from "@/components/ui/calendar.jsx";
 import {ChevronDownIcon} from "lucide-react";
 import {Input} from "@/components/ui/input.jsx";
 import {getData} from "@/dataExtraction.js";
+import HoteList from "@/charts/HoteList.jsx";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -30,6 +31,14 @@ function Home() {
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
+    //const [zoom, setZoom] = useState(9);
+    const [zoom, setZoom] = useState({
+        center: {
+            lat: 47.7562383605987,
+            lng: 13.5680551914288
+        },
+        zoom: 9
+    });
 
     const fetchData = async () => {
         try {
@@ -112,24 +121,38 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <Card className="w-full pb-0 z-1">
-                    <CardHeader>
-                        <CardTitle>Density of Visitors</CardTitle>
-                        <CardDescription>
-                            Heatmap visualization tracking the concentration of individuals across the defined space,
-                            revealing real-time or aggregate traffic patterns.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                        <DensityMap data={data}/>
-                    </CardContent>
-                </Card>
+                <div className={"flex flex-row gap-2 h-[60vh] min-h-[400px]"}>
+                    <Card className="w-full pb-0 z-1 grow-7">
+                        <CardHeader>
+                            <CardTitle>Density of Visitors</CardTitle>
+                            <CardDescription>
+                                Heatmap visualization tracking the concentration of individuals across the defined
+                                space,
+                                revealing real-time or aggregate traffic patterns.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
+                            <DensityMap data={data} zoom={zoom}/>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-96 pb-0 z-1 grow-3">
+                        <CardHeader>
+                            <CardTitle>List of Hotels in the Area</CardTitle>
+                            <CardDescription>
+                                List of hotels located within the area, providing quick access to accommodation options.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className=" overflow-y-scroll">
+                            <HoteList setZoom={setZoom}/>
+                        </CardContent>
+                    </Card>
+                </div>
                 <Card className="w-full">
                     <CardHeader>
-                        <CardTitle>Density of Visitors</CardTitle>
+                        <CardTitle>Visitors over time</CardTitle>
                         <CardDescription>
-                            Heatmap visualization tracking the concentration of individuals across the defined space,
-                            revealing real-time or aggregate traffic patterns.
+                            Bar Chart visualization detailing the volume of visitors across a defined timeline,
+                            revealing temporal trends in foot traffic and peak periods of attendance.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="h-fit overflow-clip">

@@ -6,7 +6,7 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data}) {
+export default function DensityMap({data, zoom}) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
@@ -16,7 +16,7 @@ export default function DensityMap({data}) {
         if (!data) return;
 
         if (!mapRef.current && mapContainerRef.current) {
-            mapRef.current = L.map(mapContainerRef.current).setView([47.7562383605987, 13.5680551914288], 9);
+            mapRef.current = L.map(mapContainerRef.current).setView([zoom.center.lat, zoom.center.lng], zoom.zoom);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -33,7 +33,7 @@ export default function DensityMap({data}) {
                 mapRef.current = null;
             }
         };
-    }, [data]);
+    }, [data, zoom]);
 
     // Handle map resize to ensure it fills container
     useEffect(() => {
@@ -56,7 +56,7 @@ export default function DensityMap({data}) {
             clearTimeout(resizeTimer);
             window.removeEventListener('resize', handleResize);
         };
-    }, [data]);
+    }, [data, zoom]);
 
     function drawDensityMap(data) {
         const map = mapRef.current;
