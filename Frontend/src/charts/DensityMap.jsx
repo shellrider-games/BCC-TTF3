@@ -1,16 +1,33 @@
 import * as d3 from 'd3';
-import React, {useEffect, useRef, useState} from 'react';
-import {getData} from '../dataExtraction.js';
+import React, { useEffect, useRef, useState } from 'react';
+import { getData } from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet.heat';
-import {Skeleton} from "@/components/ui/skeleton.jsx";
+import { Skeleton } from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap({data, zoom, setSelectedCity, selectedTime, selectedDate}) {
+export default function DensityMap({ data, zoom, setSelectedCity, selectedTime, selectedDate, pinLocation }) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
     const legendRef = useRef(null);
+    const pinMarkerRef = useRef(null);
+
+    const defaultIcon = L.icon({
+        iconUrl,
+        iconRetinaUrl,
+        shadowUrl,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    L.Marker.prototype.options.icon = defaultIcon;
+
 
     useEffect(() => {
         if (!data) return;
@@ -33,7 +50,20 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
                 mapRef.current = null;
             }
         };
-    }, [data, zoom]);
+    }, [data]);
+
+
+
+    useEffect(() => {
+        if (!mapRef.current || !pinLocation || !zoom) return;
+
+        const map = mapRef.current;
+
+        map.flyTo([pinLocation.lat, pinLocation.lng], zoom.zoom, {
+            animate: true,
+            duration: 1.5 // seconds, adjust as needed
+        });
+    }, [pinLocation, zoom]);
 
     // Handle map resize to ensure it fills container
     useEffect(() => {
@@ -57,6 +87,25 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
             window.removeEventListener('resize', handleResize);
         };
     }, [data]);
+
+
+    useEffect(() => {
+        console.log(pinLocation)
+        if (!mapRef.current || !pinLocation) return;
+
+        const map = mapRef.current;
+
+        // Remove previous pin if it exists
+        if (pinMarkerRef.current) {
+            map.removeLayer(pinMarkerRef.current);
+            pinMarkerRef.current = null;
+        }
+
+        // Add new pin and open its popup
+        pinMarkerRef.current = L.marker([pinLocation.lat, pinLocation.lng], {
+            riseOnHover: true,
+        }).addTo(map)
+    }, [pinLocation]);
 
     function drawDensityMap(data) {
         const map = mapRef.current;
@@ -116,7 +165,7 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
         });
 
         map.on('click', (e) => {
-            const {lat, lng} = e.latlng;
+            const { lat, lng } = e.latlng;
             let nearestPoint = null;
             let minDistance = Infinity;
 
@@ -192,8 +241,8 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
 
     if (!data) {
         return (
-            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className="rounded-xl">
-                <Skeleton className="h-full w-full"/>
+            <div style={{ height: '100%', width: '100%', minHeight: '400px' }} className="rounded-xl">
+                <Skeleton className="h-full w-full" />
             </div>
         );
     }
@@ -201,7 +250,7 @@ export default function DensityMap({data, zoom, setSelectedCity, selectedTime, s
     return (
         <div
             ref={mapContainerRef}
-            style={{height: '100%', width: '100%', minHeight: '400px'}}
+            style={{ height: '100%', width: '100%', minHeight: '400px' }}
             className="rounded-xl"
         />
     );

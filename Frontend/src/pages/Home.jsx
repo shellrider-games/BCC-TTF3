@@ -1,5 +1,5 @@
 import '../App.css'
-import {TypographyH1, TypographyH3} from "@/components/Typography.jsx";
+import { TypographyH1, TypographyH3 } from "@/components/Typography.jsx";
 import {
     Card,
     CardAction,
@@ -9,18 +9,17 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card.jsx";
-import {Button} from "@/components/ui/button.jsx";
+import { Button } from "@/components/ui/button.jsx";
 import DensityMap from "@/charts/DensityMap.jsx";
 import BarChart from "@/charts/BarChart.jsx";
-import {useEffect, useState} from "react";
-import {Label} from "@/components/ui/label.jsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.jsx";
-import {Calendar} from "@/components/ui/calendar.jsx";
-import {ChevronDownIcon} from "lucide-react";
-import {Input} from "@/components/ui/input.jsx";
-import {getData} from "@/dataExtraction.js";
+import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label.jsx";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.jsx";
+import { Calendar } from "@/components/ui/calendar.jsx";
+import { ChevronDownIcon } from "lucide-react";
+import { Input } from "@/components/ui/input.jsx";
+import { getData } from "@/dataExtraction.js";
 import HoteList from "@/charts/HoteList.jsx";
-import poiList from "@/data/poi.json";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -41,6 +40,10 @@ function Home() {
         },
         zoom: 9
     });
+    const [pinLocation, setPinLocation] = useState({
+        lat: 47.7562383605987,
+        lng: 13.5680551914288
+    })
 
     const fetchData = async () => {
         try {
@@ -93,7 +96,7 @@ function Home() {
                                         className="w-32 justify-between font-normal"
                                     >
                                         {date ? date.toLocaleDateString() : "Select date"}
-                                        <ChevronDownIcon/>
+                                        <ChevronDownIcon />
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -136,7 +139,7 @@ function Home() {
                         </CardHeader>
                         <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
                             <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity} selectedTime={time}
-                                        selectedDate={date.toString()}/>
+                                selectedDate={date.toString()} pinLocation={pinLocation}/>
                         </CardContent>
                     </Card>
                     <Card className="w-96 pb-0 z-1 grow-3">
@@ -147,7 +150,7 @@ function Home() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className=" overflow-y-scroll">
-                            <HoteList setZoom={setZoom}/>
+                            <HoteList setZoom={setZoom} setPinLocation={setPinLocation}/>
                         </CardContent>
                     </Card>
                 </div>
@@ -161,7 +164,7 @@ function Home() {
                     </CardHeader>
                     <CardContent className="h-fit overflow-clip">
                         <BarChart data={data} selectedHour={time?.substring(0, 2)}
-                                  selectedDate={date}/>
+                            selectedDate={date} />
                     </CardContent>
                 </Card>
             </div>
