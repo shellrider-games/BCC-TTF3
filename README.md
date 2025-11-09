@@ -1,6 +1,6 @@
-# <INSERT PROJECT NAME HERE>
+# TourSight
 
-> A predictive model and dashboard for forecasting visitor traffic at points of interest. Built for the <INSERT HACKATHON NAME HERE>.
+> A predictive model and dashboard for forecasting visitor traffic at points of interest. Built during the Tourism Technology Festival 3.0
 
 **Note:** The original dataset used for this project is proprietary and cannot be shared. This repository provides the complete code pipeline, allowing you to train the model and run the dashboard using your own data, provided it matches the schema defined below.
 
@@ -8,35 +8,12 @@
 
 ## Dashboard Preview
 
-<INSERT A SCREENSHOT OF YOUR DASHBOARD HERE>
-*A quick preview of the final dashboard visualization.*
-
----
-
-## Table of Contents
-
-- [](#)
-  - [Dashboard Preview](#dashboard-preview)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Technology Stack](#technology-stack)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-  - [Data Schema (Important)](#data-schema-important)
-  - [| `wind_speed_10m` | `float` | `High cloud coverage (%)` |](#-wind_speed_10m--float--high-cloud-coverage--)
-  - [How to Run](#how-to-run)
-    - [1. Train the Model](#1-train-the-model)
-    - [2. Run the Flask Backend](#2-run-the-flask-backend)
-  - [Weather data](#weather-data)
-
----
+![screenshot.png](screenshot.png)
 
 ## Features
 
 * Machine learning model to predict visitor counts.
 * Interactive dashboard to visualize historical data and future predictions.
-* <INSERT 1-2 OTHER KEY FEATURES, e.g., "Analysis of peak visitor times", "Feature engineering based on time-of-day">
 
 ---
 
@@ -44,9 +21,8 @@
 
 * **Modeling:**  LightGBM, scikit-learn
 * **Backend:** Flask
-* **Dashboard:** D3
+* **Dashboard:** D3, matplotlib
 * **Data Processing:** Pandas, NumPy
-
 ---
 
 ## Getting Started
@@ -57,39 +33,11 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 You will need the following tools installed on your system:
 
-* <INSERT PRE-REQUISITE, e.g., Python 3.9+>
-* <INSERT PRE-REQUISITE, e.g., pip or Conda>
-* <INSERT PRE-REQUISITE, e.g., Git>
-
-### Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/shellrider-games/BCC-TTF3.git
-    cd BCC-TTF3
-    ```
-
-2.  **Set up the environment:**
-
-    *<Choose the method that matches your project and delete the others>*
-
-    > **Using `requirements.txt`**
-    > ```bash
-    > cd Backend
-    > pip install -r requirements.txt
-    > ```
-
-3.  **Other Setup (if any):**
-    <INSERT ANY OTHER STEPS, e.g., "Create a .env file and add your API key", "Download a pre-trained model file">
-
----
+* Python 3.12
 
 ## Data Schema (Important)
 
 To use this project, you must provide your own data. The model pipeline expects your data to be in a specific format.
-
-1.  **File Name:** <INSERT FILENAME, e.g., `data.csv`>
-2.  **Location:** Place your data file in the `<INSERT DATA FOLDER, e.g., /data>` directory.
 
 Your data **must** contain the following columns:
 
@@ -110,42 +58,6 @@ Your data **must** contain the following columns:
 | `wind_speed_10m` | `float` | `High cloud coverage (%)` |
 ---
 
-## How to Run
-
-Follow these steps in order.
-
-### 1. Train the Model
-
-This script will load your data from the `/data` folder, run feature engineering, train the model, and save the final model file.
-
-```bash
-python <INSERT PATH TO TRAIN SCRIPT, e.g., src/train_model.py>
-```
-
-### 2. Run the Flask Backend
-
-The project includes a Flask backend that serves as the API server for the application. Flask is a lightweight web framework that provides a simple way to create web endpoints for your model and data.
-
-To run the Flask backend:
-
-1. Navigate to the Backend directory:
-   ```bash
-   cd Backend
-   ```
-
-2. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the Flask application:
-   ```bash
-   flask run
-   ```
-
-4. By default, the Flask server will start on `http://localhost:5000`. You can access the API endpoints through your browser or API client.
-
-**Note:** For development purposes, Flask's built-in server is sufficient. For production deployment, consider using a production-ready WSGI server like Gunicorn or uWSGI.
 
 ## Weather data
 
