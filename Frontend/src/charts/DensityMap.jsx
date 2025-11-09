@@ -1,37 +1,23 @@
 import * as d3 from 'd3';
-import React, { useEffect, useRef, useState } from 'react';
-import { getData } from '../dataExtraction.js';
+import React, {useEffect, useRef, useState} from 'react';
+import {getData} from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.heat';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
 
-export default function DensityMap() {
+export default function DensityMap({data}) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
     const heatLayerRef = useRef(null);
     const legendRef = useRef(null);
-    const [data, setData] = useState(null);
-
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const loadedData = await getData();
-                console.log('Data loaded:', loadedData);
-                setData(loadedData);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-        loadData();
-    }, []);
 
     useEffect(() => {
         if (!data) return;
 
         if (!mapRef.current && mapContainerRef.current) {
             mapRef.current = L.map(mapContainerRef.current).setView([47.7562383605987, 13.5680551914288], 9);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(mapRef.current);

@@ -1,62 +1,13 @@
 import * as d3 from 'd3';
-import { getData, dateTimeParser } from '../dataExtraction.js';
-import React, { useEffect, useRef, useState } from 'react';
+import {dateTimeParser} from '../dataExtraction.js';
+import React, {useEffect, useRef, useState} from 'react';
 import {Skeleton} from "@/components/ui/skeleton.jsx";
-import { dateTimeParser } from '../dataExtraction.js';
 
-export default function BarChart({ data, selectedHour, setSelectedHour, selectedDate }) {
+
+export default function BarChart({data, selectedHour, selectedDate}) {
     const svgRef = useRef(null);
     const containerRef = useRef(null);
-    const [data, setData] = useState(null);
     const [dimensions, setDimensions] = useState({width: 928, height: 500});
-
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const loadedData = await getData();
-                console.log('Data loaded:', loadedData);
-                setData(loadedData);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-        loadData();
-    }, []);
-
-    // Handle container resize to ensure chart fills container
-    useEffect(() => {
-        if (!containerRef.current) return;
-
-        const handleResize = () => {
-            if (containerRef.current) {
-                const rect = containerRef.current.getBoundingClientRect();
-                console.log('Container rect:', rect);
-                console.log('Resizing chart container to:', {
-                    width: rect.width,
-                    height: rect.height
-                });
-
-                // Ensure minimum dimensions
-                const width = Math.max(rect.width, 300);
-                const height = Math.max(rect.height, 200);
-
-                setDimensions({width, height});
-            }
-        };
-
-        // Initial resize after a short delay to ensure container is rendered
-        const resizeTimer = setTimeout(handleResize, 100);
-
-        // Add window resize listener
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            clearTimeout(resizeTimer);
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-export default function BarChart({ data, selectedHour, setSelectedHour, selectedDate }) {
-  const svgRef = useRef(null);
 
     useEffect(() => {
         if (!data || !svgRef.current) return;
@@ -72,60 +23,60 @@ export default function BarChart({ data, selectedHour, setSelectedHour, selected
         const marginBottom = 40;
         const marginLeft = 40;
 
-    // Filter data by selected date first
-    let filteredData = data;
-    if (selectedDate) {
-      filteredData = data.filter(d => {
-        const parsed = dateTimeParser(d.timestamp);
-        const dataDate = parsed.fullDate;
-        return (
-          dataDate.getFullYear() === selectedDate.getFullYear() &&
-          dataDate.getMonth() === selectedDate.getMonth() &&
-          dataDate.getDate() === selectedDate.getDate()
-        );
-      });
-    }
+        // Filter data by selected date first
+        let filteredData = data;
+        if (selectedDate && false) {
+            filteredData = data.filter(d => {
+                const parsed = dateTimeParser(d.timestamp);
+                const dataDate = parsed.fullDate;
+                return (
+                    dataDate.getFullYear() === selectedDate.getFullYear() &&
+                    dataDate.getMonth() === selectedDate.getMonth() &&
+                    dataDate.getDate() === selectedDate.getDate()
+                );
+            });
+        }
 
-    console.log('Filtered data by date:', filteredData.length, 'out of', data.length);
+        console.log('Filtered data by date:', filteredData.length, 'out of', data.length);
 
-    // Then count by hours
-    const hourCounts = d3.rollups(
-      filteredData,
-      v => v.length,
-      d => dateTimeParser(d.timestamp).hours
-    ).map(([hour, count]) => ({ hour, count }));
+        // Then count by hours
+        const hourCounts = d3.rollups(
+            filteredData,
+            v => v.length,
+            d => dateTimeParser(d.timestamp).hours
+        ).map(([hour, count]) => ({hour, count}));
 
-    hourCounts.sort((a, b) => a.hour - b.hour);
-    console.log('Hour counts:', hourCounts);
+        hourCounts.sort((a, b) => a.hour - b.hour);
+        console.log('Hour counts:', hourCounts);
 
-    // If no data for selected date, show empty chart with message
-    if (hourCounts.length === 0) {
-      const svg = d3.select(svgRef.current)
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [0, 0, width, height])
-        .attr("style", "max-width: 100%; height: auto;");
+        // If no data for selected date, show empty chart with message
+        if (hourCounts.length === 0) {
+            const svg = d3.select(svgRef.current)
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", [0, 0, width, height])
+                .attr("style", "max-width: 100%; height: auto;");
 
-      svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", height / 2)
-        .attr("text-anchor", "middle")
-        .attr("fill", "#666")
-        .style("font-size", "18px")
-        .text("No data available for selected date");
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#666")
+                .style("font-size", "18px")
+                .text("No data available for selected date");
 
-      return;
-    }
+            return;
+        }
 
-    const x = d3.scaleBand()
-      .domain(hourCounts.map(d => d.hour))
-      .range([marginLeft, width - marginRight])
-      .padding(0.1);
+        const x = d3.scaleBand()
+            .domain(hourCounts.map(d => d.hour))
+            .range([marginLeft, width - marginRight])
+            .padding(0.1);
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(hourCounts, d => d.count)])
-      .nice()
-      .range([height - marginBottom, marginTop]);
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(hourCounts, d => d.count)])
+            .nice()
+            .range([height - marginBottom, marginTop]);
 
         // Create SVG
         const svg = d3.select(svgRef.current)
@@ -135,46 +86,46 @@ export default function BarChart({ data, selectedHour, setSelectedHour, selected
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("style", "display: block; margin: auto;");
 
-    svg.append("g")
-      .selectAll("rect")
-      .data(hourCounts)
-      .join("rect")
-      .attr("x", d => x(d.hour))
-      .attr("y", d => y(d.count))
-      .attr("height", d => y(0) - y(d.count))
-      .attr("width", x.bandwidth())
-      .attr("fill", d => d.hour === selectedHour ? "orange" : "steelblue")
-      .attr("cursor", "pointer")
-      .on("click", (event, d) => {
-        setSelectedHour(d.hour === selectedHour ? null : d.hour);
-      })
-      .on("mouseover", function () {
-        d3.select(this).attr("opacity", 0.7);
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("opacity", 1);
-      });
+        svg.append("g")
+            .selectAll("rect")
+            .data(hourCounts)
+            .join("rect")
+            .attr("x", d => x(d.hour))
+            .attr("y", d => y(d.count))
+            .attr("height", d => y(0) - y(d.count))
+            .attr("width", x.bandwidth())
+            .attr("fill", d => d.hour === selectedHour ? "orange" : "steelblue")
+            .attr("cursor", "pointer")
+            .on("click", (event, d) => {
+                //setSelectedHour(d.hour === selectedHour ? setSelectedHour + ":00" : d.hour + ":00");
+            })
+            .on("mouseover", function () {
+                d3.select(this).attr("opacity", 0.7);
+            })
+            .on("mouseout", function () {
+                d3.select(this).attr("opacity", 1);
+            });
 
-    // Add x-axis
-    svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).tickFormat(d => `${d}:00`))
-      .selectAll("text")
-      .attr("transform", "rotate(-45)")
-      .style("text-anchor", "end");
+        // Add x-axis
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x).tickFormat(d => `${d}:00`))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
 
-    // Add y-axis
-    svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(y))
-      .call(g => g.select(".domain").remove())
-      .call(g => g.append("text")
-        .attr("x", -marginLeft)
-        .attr("y", 10)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "start")
-        .text("Count"));
-  }
+        // Add y-axis
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.append("text")
+                .attr("x", -marginLeft)
+                .attr("y", 10)
+                .attr("fill", "currentColor")
+                .attr("text-anchor", "start")
+                .text("Count"));
+    }
 
     if (!data) {
         const mockBarCount = 24; // Assuming hourly data like the real chart

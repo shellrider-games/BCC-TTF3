@@ -31,39 +31,32 @@ function Home() {
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=2025-11-01');
+    const fetchData = async () => {
+        try {
+            const response = await fetch('http://10.6.22.67:42069/api/v1/visitors?date=2025-11-01');
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const csvText = await response.text();
-                setData(await getData(csvText));
-
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
 
-        async function loadData() {
-            try {
-                const loadedData = await getData();
-                console.log('Data loaded in App:', loadedData);
-                setData(loadedData);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
+            const csvText = await response.text();
+            setData(await getData(csvText));
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
+    };
 
+    useEffect(() => {
         fetchData();
-        //loadData();
-        console.log("testoooo")
     }, [date, time]);
+
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
 
     return (
@@ -127,7 +120,7 @@ function Home() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                        <DensityMap passedData={data}/>
+                        <DensityMap data={data}/>
                     </CardContent>
                 </Card>
                 <Card className="w-full">
