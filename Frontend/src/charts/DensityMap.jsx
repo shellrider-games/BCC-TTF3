@@ -4,6 +4,7 @@ import { getData, dateTimeParser } from '../dataExtraction.js';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.heat';
+import {Skeleton} from "@/components/ui/skeleton.jsx";
 
 export default function DensityMap({ data, selectedHour, setSelectedHour, selectedDate }) {
     const mapContainerRef = useRef(null);
@@ -13,8 +14,8 @@ export default function DensityMap({ data, selectedHour, setSelectedHour, select
 
     useEffect(() => {
         if (!mapRef.current && mapContainerRef.current) {
-            mapRef.current = L.map(mapContainerRef.current).setView([47.9062383605987, 13.5680551914288], 7.5);
-
+            mapRef.current = L.map(mapContainerRef.current).setView([47.7562383605987, 13.5680551914288], 9);
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(mapRef.current);
@@ -33,6 +34,29 @@ export default function DensityMap({ data, selectedHour, setSelectedHour, select
             drawDensityMap(data, selectedHour);
         }
     }, [data, selectedHour, selectedDate]);
+
+    // Handle map resize to ensure it fills container
+    useEffect(() => {
+        if (!mapRef.current) return;
+
+        const handleResize = () => {
+            if (mapRef.current) {
+                console.log('Resizing map...');
+                mapRef.current.invalidateSize();
+            }
+        };
+
+        // Initial resize after a short delay to ensure container is rendered
+        const resizeTimer = setTimeout(handleResize, 100);
+
+        // Add window resize listener
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [data]);
 
     function drawDensityMap(data, selectedHour) {
         const map = mapRef.current;
@@ -90,10 +114,23 @@ export default function DensityMap({ data, selectedHour, setSelectedHour, select
         }).addTo(map);
     }
 
+    if (!data) {
+        return (
+            <div style={{height: '100%', width: '100%', minHeight: '400px'}} className={"rounded-xl"}>
+                <Skeleton className="h-full w-full"/>
+            </div>
+        );
+    }
+
     return (
         <div
             ref={mapContainerRef}
-            style={{ height: '90vh', width: '90vw' }}
+            style={{
+                height: '100%',
+                width: '100%',
+                minHeight: '400px'
+            }}
+            className={"rounded-xl"}
         />
     );
 }

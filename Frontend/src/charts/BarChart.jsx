@@ -1,23 +1,83 @@
 import * as d3 from 'd3';
 import { dateTimeParser } from '../dataExtraction.js';
 import React, { useEffect, useRef } from 'react';
+import {Skeleton} from "@/components/ui/skeleton.jsx";
 
 export default function BarChart({ data, selectedHour, setSelectedHour, selectedDate }) {
     const svgRef = useRef(null);
+    const containerRef = useRef(null);
+    const [data, setData] = useState(null);
+    const [dimensions, setDimensions] = useState({width: 928, height: 500});
+
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const loadedData = await getData();
+                console.log('Data loaded:', loadedData);
+                setData(loadedData);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+        loadData();
+    }, []);
+
+    // Handle container resize to ensure chart fills container
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const handleResize = () => {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                console.log('Container rect:', rect);
+                console.log('Resizing chart container to:', {
+                    width: rect.width,
+                    height: rect.height
+                });
+
+                // Ensure minimum dimensions
+                const width = Math.max(rect.width, 300);
+                const height = Math.max(rect.height, 200);
+
+                setDimensions({width, height});
+            }
+        };
+
+        // Initial resize after a short delay to ensure container is rendered
+        const resizeTimer = setTimeout(handleResize, 100);
+
+        // Add window resize listener
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         if (!data || !svgRef.current) return;
         d3.select(svgRef.current).selectAll("*").remove();
         drawBarChart(data);
-    }, [data, selectedHour, selectedDate]);
+    }, [data, selectedHour, selectedDate, dimensions]);
 
-    function drawBarChart() {
-        const width = 928;
-        const height = 500;
+    function drawBarChart(data) {
+        const {width, height} = dimensions;
         const marginTop = 30;
         const marginRight = 20;
         const marginBottom = 40;
         const marginLeft = 80;
+
+        console.log('Drawing chart with dimensions:', {width, height});
+        console.log('Chart margins:', {marginTop, marginRight, marginBottom, marginLeft});
+        console.log('Chart drawing area:', {
+            left: marginLeft,
+            right: width - marginRight,
+            top: marginTop,
+            bottom: height - marginBottom,
+            width: width - marginLeft - marginRight,
+            height: height - marginTop - marginBottom
+        });
 
         let hourToHighlight = selectedHour;
         if (selectedDate && hourToHighlight === null) {
@@ -81,10 +141,11 @@ export default function BarChart({ data, selectedHour, setSelectedHour, selected
             .range([height - marginBottom, marginTop]);
 
         const svg = d3.select(svgRef.current)
-            .attr("width", width)
-            .attr("height", height)
+            .attr("width", "100%")
+            .attr("height", "100%")
             .attr("viewBox", [0, 0, width, height])
-            .attr("style", "max-width: 100%; height: auto;");
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("style", "display: block; margin: auto;");
 
         svg.append("g")
             .selectAll("rect")
@@ -123,12 +184,80 @@ export default function BarChart({ data, selectedHour, setSelectedHour, selected
                 .attr("y", 10)
                 .attr("fill", "currentColor")
                 .attr("text-anchor", "start")
-                .text("Number of People"));
+                .text("Count"));
+    }
+
+    if (!data) {
+        const mockBarCount = 24; // Assuming hourly data like the real chart
+        const bars = Array.from({length: mockBarCount}, (_, i) => i);
+        const randomHeights = bars.map(() => Math.random() * 350 + 10); // 10% to 90% height
+
+        return (
+            <div
+                ref={containerRef}
+                style={{
+                    height: '100%',
+                    width: '100%',
+                    minHeight: '400px',
+                    position: 'relative'
+                }}
+                className={"rounded-xl"}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: 40, // Matches marginLeft
+                        right: 20, // Matches marginRight
+                        top: 30, // Matches marginTop
+                        bottom: 40, // Matches marginBottom
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    {bars.map((_, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                flex: 1,
+                                margin: '0 1px' // Small spacing between bars
+                            }}
+                        >
+                            <Skeleton
+                                className="w-full"
+                                style={{
+                                    height: `${randomHeights[index]}px`, // Use pre-generated random heights
+                                    minHeight: '15px'
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <svg ref={svgRef}></svg>
+        <div
+            ref={containerRef}
+            style={{
+                height: '100%',
+                width: '100%',
+                minHeight: '100px',
+                position: 'relative'
+            }}
+            className={"rounded-xl"}
+        >
+            <svg
+                ref={svgRef}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%'
+                }}
+            ></svg>
         </div>
     );
 }

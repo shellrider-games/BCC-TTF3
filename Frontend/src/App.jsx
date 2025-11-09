@@ -5,6 +5,8 @@ import { getData } from './dataExtraction.js'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './App.css'
+import {BrowserRouter, Route, Routes} from "react-router";
+import Home from "@/pages/Home.jsx";
 
 function App() {
   const [data, setData] = useState(null);

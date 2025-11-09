@@ -24,9 +24,11 @@
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
   - [Data Schema (Important)](#data-schema-important)
+  - [| `wind_speed_10m` | `float` | `High cloud coverage (%)` |](#-wind_speed_10m--float--high-cloud-coverage--)
   - [How to Run](#how-to-run)
     - [1. Train the Model](#1-train-the-model)
     - [2. Run the Flask Backend](#2-run-the-flask-backend)
+  - [Weather data](#weather-data)
 
 ---
 
@@ -40,11 +42,10 @@
 
 ## Technology Stack
 
-* **Modeling:** <INSERT ML LIBRARIES, e.g., Pandas, Scikit-learn, TensorFlow, PyTorch>
-* **Backend:** Flask - A lightweight WSGI web application framework for Python
-* **Dashboard:** <INSERT DASHBOARD TOOL, e.g., Streamlit, Plotly Dash, Tableau>
-* **Data Processing:** <INSERT LIBRARIES, e.g., Pandas, NumPy>
-* **Language:** <INSERT LANGUAGE, e.g., Python 3.10>
+* **Modeling:**  LightGBM, scikit-learn
+* **Backend:** Flask
+* **Dashboard:** D3
+* **Data Processing:** Pandas, NumPy
 
 ---
 
@@ -94,12 +95,19 @@ Your data **must** contain the following columns:
 
 | Column Name | Data Type | Description |
 | :--- | :--- | :--- |
-| `<INSERT COLUMN 1>` | `<e.g., datetime>` | `<e.g., Timestamp of the reading, in ISO 8601 format>` |
-| `<INSERT COLUMN 2>` | `<e.g., string>` | `<e.g., Unique identifier for the Point of Interest (POI)>` |
-| `<INSERT COLUMN 3>` | `<e.g., integer>` | `<e.g., The target variable: number of visitors counted>` |
-| `<INSERT COLUMN 4>` | `<e.g., float>` | `<e.g., Weather temperature at the time (optional feature)>` |
-| `...` | `...` | `<Add as many columns as your model requires>` |
-
+| `installationId` | `string` | `Identifier of the Point of Interest (POI)` |
+| `timestamp` | `datetime` | `Date and Time of the observation` |
+| `value` | `integer` | `Amount of people located at the POI` |
+| `Ort` | `string` | `Name of the location` |
+| `Latitude` | `float` | `Latitude of the POI` |
+| `Longitude` | `float` | `Longitude of the POI` |
+| `temperature_2m` | `float` | `Temperature at 2m height` |
+| `relative_humidity_2m` | `float` | `Relative humidity at 2m height` |
+| `precipitation` | `float` | `Rain, Snow and Hail (mm)` |
+| `wind_speed_10m` | `float` | `Wind speed at 10m (km/h)` |
+| `cloud_cover_low` | `float` | `Low cloud coverage (%)` |
+| `cloud_cover_mid` | `float` | `Medium cloud coverage (%)` |
+| `wind_speed_10m` | `float` | `High cloud coverage (%)` |
 ---
 
 ## How to Run
@@ -132,9 +140,21 @@ To run the Flask backend:
 
 3. Run the Flask application:
    ```bash
-   flas run
+   flask run
    ```
 
 4. By default, the Flask server will start on `http://localhost:5000`. You can access the API endpoints through your browser or API client.
 
 **Note:** For development purposes, Flask's built-in server is sufficient. For production deployment, consider using a production-ready WSGI server like Gunicorn or uWSGI.
+
+## Weather data
+
+This project uses the Open-Meteo v1 API to get weather data which used in the prediction model. For mor information on the API please refer to their documentation at https://open-meteo.com/en/docs.
+
+ The script `batch/todaysWeather.py` takes the path to a CSV file as the first positional argument. The CSV file needs to have at least the 3 columns named `TrackerID`, `Latitude` and `Longitude`. The CSV file is using `;`as a seperator  and `,` as a comma file. The script will use the weather API for each row's coordinate and get save todays hourly weather as a CSV file.
+
+ Minimal CSV example:
+```csv
+TrackerID;Latitude;Longitude
+XISKO;47.83468443576882;13.1133425789364
+```
