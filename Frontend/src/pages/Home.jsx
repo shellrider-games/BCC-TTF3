@@ -31,6 +31,7 @@ function Home() {
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
+    const [selectedCity, setSelectedCity] = useState("")
     //const [zoom, setZoom] = useState(9);
     const [zoom, setZoom] = useState({
         center: {
@@ -50,6 +51,7 @@ function Home() {
             }
 
             const csvText = await response.text();
+            console.log(csvText)
             setData(await getData(csvText));
 
         } catch (err) {
@@ -132,7 +134,7 @@ function Home() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                            <DensityMap data={data} zoom={zoom}/>
+                            <DensityMap data={data} zoom={zoom} setSelectedCity={setSelectedCity}/>
                         </CardContent>
                     </Card>
                     <Card className="w-96 pb-0 z-1 grow-3">

@@ -15,7 +15,10 @@ export async function getData(dataString) {
             tourDataId: d.TourdataID,
             objectID: d.ObjectGUID,
             latitude_coordinate: +d.Latitude?.replace(',', '.'),
-            longitude_coordinate: +d.Longitude?.replace(',', '.')
+            longitude_coordinate: +d.Longitude?.replace(',', '.'),
+            temperature_2m: d.temperature_2m,
+            humidity_2m:d.relative_humidity_2m,
+            wind_speed: d.wind_speed_10m
         }));
         return data;
     } catch (error) {
