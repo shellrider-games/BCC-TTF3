@@ -1,5 +1,5 @@
 import '../App.css'
-import {TypographyH1, TypographyH3} from "@/components/Typography.jsx";
+import { TypographyH1, TypographyH3 } from "@/components/Typography.jsx";
 import {
     Card,
     CardAction,
@@ -9,16 +9,16 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card.jsx";
-import {Button} from "@/components/ui/button.jsx";
+import { Button } from "@/components/ui/button.jsx";
 import DensityMap from "@/charts/DensityMap.jsx";
 import BarChart from "@/charts/BarChart.jsx";
-import {useEffect, useState} from "react";
-import {Label} from "@/components/ui/label.jsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.jsx";
-import {Calendar} from "@/components/ui/calendar.jsx";
-import {ChevronDownIcon} from "lucide-react";
-import {Input} from "@/components/ui/input.jsx";
-import {getData} from "@/dataExtraction.js";
+import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label.jsx";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.jsx";
+import { Calendar } from "@/components/ui/calendar.jsx";
+import { ChevronDownIcon } from "lucide-react";
+import { Input } from "@/components/ui/input.jsx";
+import { getData } from "@/dataExtraction.js";
 
 // Debug: Log to verify Input component is imported correctly
 console.log('Input component imported:', Input);
@@ -30,6 +30,7 @@ function Home() {
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState((new Date().getHours() < 10 ? '0' : '') + new Date().getHours() + ":" + (new Date().getMinutes() < 10 ? '0' : '') + new Date().getMinutes());
+    const [selectedCity, setSelectedCity] = useState("")
 
     const fetchData = async () => {
         try {
@@ -41,6 +42,7 @@ function Home() {
             }
 
             const csvText = await response.text();
+            console.log(csvText)
             setData(await getData(csvText));
 
         } catch (err) {
@@ -112,18 +114,18 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <Card className="w-full pb-0 z-1">
-                    <CardHeader>
-                        <CardTitle>Density of Visitors</CardTitle>
-                        <CardDescription>
-                            Heatmap visualization tracking the concentration of individuals across the defined space,
-                            revealing real-time or aggregate traffic patterns.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
-                        <DensityMap data={data}/>
-                    </CardContent>
-                </Card>
+                    <Card className="w-full pb-0 z-1">
+                        <CardHeader>
+                            <CardTitle>Density of Visitors</CardTitle>
+                            <CardDescription>
+                                Heatmap visualization tracking the concentration of individuals across the defined space,
+                                revealing real-time or aggregate traffic patterns.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[60vh] min-h-[400px] p-0 overflow-clip">
+                            <DensityMap data={data} setSelectedCity={setSelectedCity} />
+                        </CardContent>
+                    </Card>
                 <Card className="w-full">
                     <CardHeader>
                         <CardTitle>Density of Visitors</CardTitle>
@@ -134,7 +136,7 @@ function Home() {
                     </CardHeader>
                     <CardContent className="h-fit overflow-clip">
                         <BarChart data={data} selectedHour={time?.substring(0, 2)}
-                                  selectedDate={date}/>
+                            selectedDate={date} />
                     </CardContent>
                 </Card>
             </div>
