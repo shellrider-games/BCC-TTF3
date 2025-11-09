@@ -49,7 +49,7 @@ export default function HotelList({setZoom}) {
                         onChange={handleSearchChange}
                         className="mb-4" // Added some margin for spacing
                     />
-                    <Button variant="outline" onclick={() => setZoom({
+                    <Button variant="outline" alt="reset" onClick={() => setZoom({
                         center: {
                             lat: 47.7562383605987,
                             lng: 13.5680551914288
