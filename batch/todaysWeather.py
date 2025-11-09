@@ -65,6 +65,7 @@ for row in df.itertuples():
         inclusive = "left"
     )}
 
+    hourly_data["poi_id'"] = row.TrackerID
     hourly_data["temperature_2m"] = hourly_temperature_2m
     hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
     hourly_data["precipitation"] = hourly_precipitation
@@ -74,4 +75,9 @@ for row in df.itertuples():
     hourly_data["cloud_cover_high"] = hourly_cloud_cover_high
 
     hourly_dataframe = pd.DataFrame(data = hourly_data)
-    hourly_dataframe.to_csv(current_time_string+row.TrackerID+".csv",index=False)
+
+    dataframes.append(hourly_dataframe)
+    hourly_dataframe.to_csv("data/"+current_time_string+row.TrackerID+".csv",index=False)
+
+concatenated_df = pd.concat(dataframes, ignore_index=True)
+concatenated_df.to_csv("data/"+current_time_string+"ALL_POI.csv",index=False)

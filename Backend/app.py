@@ -1,8 +1,11 @@
 from flask import Flask, request, make_response
 from datetime import datetime, timedelta, timezone
+from flask_cors import CORS, cross_origin
 import pandas as pd
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['DEBUG'] = True
 DATA_FILE_PATH = 'data/TTF3_POI_Weather_Full.csv'
 CSV_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S%z" 
